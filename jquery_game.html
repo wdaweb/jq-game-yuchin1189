@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>猜數字</title>
+    <style>
+      * {
+        border-radius: 0.5rem;
+      }
+      .container {
+        margin: auto;
+        width: fit-content;
+      }
+      #restart {
+        margin: 0.5rem 0;
+        display: none;
+      }
+      p {
+        margin: 0 auto 1rem auto;
+        background: lightgray;
+        text-align: left;
+        padding: 0.5rem;
+      }
+      button:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>猜數字</h1>
+      <p>
+        猜一個 1 ~ 100 之間的數字<br />輸入區按方向鍵上下可加減<br />提示：<span
+          id="message"
+        ></span>
+      </p>
+      <input type="number" id="input" placeholder=" 1 ~ 100" size="9" />
+      <button id="submit" style="width: 3rem">猜</button>
+      <br />
+      <button id="restart">重新開始</button>
+      <br />
+      <h2>已猜紀錄</h2>
+      <ul id="list"></ul>
+    </div>
+
+    <!-- 引入 jQuery -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let targetNumber = Math.floor(Math.random() * 100) + 1;
+      console.log('懶了嗎？在此輸入 targetNumber 獲得答案。');
+
+      function checkAnswer() {
+        $('#restart').show();
+
+        const userGuess = parseInt($('#input').val());
+
+        if (isNaN(userGuess) || userGuess > 100 || userGuess < 1) {
+          $('#input').val('');
+          alert('請輸入 1 ~ 100 之間的數字');
+        } else if (userGuess < targetNumber) {
+          $('#message').text('高一點 ↑');
+          $('#list').prepend(`<li>${userGuess} 太低</li><br/>`);
+        } else if (userGuess > targetNumber) {
+          $('#message').text('低一點 ↓');
+          $('#list').prepend(`<li>${userGuess} 太高</li><br/>`);
+        } else {
+          alert(`你贏了！ 答案是 ${targetNumber}`);
+          $('#submit').hide();
+          $('#list').children().remove();
+          $('#message').text('');
+          $('span').hide();
+          $('h2').hide();
+          $('#restart').css({
+            'font-size': '2rem',
+            'border-radious': '0.5rem',
+          });
+        }
+      }
+
+      // 按 Enter、按「猜」執行 checkAnswer
+      $('#input').keydown(function (event) {
+        if (event.key === 'Enter') {
+          checkAnswer();
+        }
+      });
+      $('#submit').on('click', checkAnswer);
+
+      // 按「重新開始」
+      $('#restart').on('click', function () {
+        targetNumber = Math.floor(Math.random() * 100) + 1;
+        $('#message').text('');
+        $('#input').show();
+        $('#input').val('');
+        $('#submit').show();
+        $('#list').children().remove();
+        $('#restart').css('font-size', '1rem');
+        $('#restart').hide();
+      });
+    </script>
+  </body>
+</html>
